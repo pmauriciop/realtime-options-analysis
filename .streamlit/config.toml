@@ -1,0 +1,12 @@
+# Configuración para Streamlit Cloud
+
+# Este archivo es necesario para el despliegue en Streamlit Cloud
+# Asegúrate de que tu aplicación funcione correctamente con estas configuraciones
+
+[server]
+headless = true
+port = $PORT
+enableCORS = false
+
+[browser]
+gatherUsageStats = false
