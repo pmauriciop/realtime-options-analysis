@@ -1,0 +1,62 @@
+===============================================
+🚀 GGAL OPTIONS ANALYZER - LISTO PARA INTERNET
+===============================================
+
+✅ TU APLICACIÓN ESTÁ PREPARADA PARA DESPLIEGUE
+
+📋 ARCHIVOS CREADOS:
+- ✅ Dockerfile (para contenedores)
+- ✅ Procfile (para Heroku) 
+- ✅ requirements.txt (dependencias)
+- ✅ .streamlit/config.toml (configuración)
+- ✅ .gitignore (archivos a ignorar)
+- ✅ Repositorio Git inicializado
+
+🌟 OPCIÓN RECOMENDADA: STREAMLIT CLOUD (GRATIS)
+============================================
+
+PASOS:
+1. Ve a github.com y crea cuenta
+2. Crea nuevo repositorio público: "ggal-options-analyzer"
+3. En tu terminal ejecuta:
+   git remote add origin https://github.com/TU_USUARIO/ggal-options-analyzer.git
+   git branch -M main
+   git push -u origin main
+
+4. Ve a share.streamlit.io
+5. Haz login con GitHub
+6. Selecciona tu repositorio
+7. Archivo principal: app.py
+8. ¡Despliega!
+
+🎯 RESULTADO: Tu app estará en:
+https://TU_USUARIO-ggal-options-analyzer-app-xxxxx.streamlit.app
+
+🌐 OTRAS OPCIONES:
+================
+
+RAILWAY (railway.app):
+- Conecta GitHub
+- Deploy automático
+- Gratis hasta ciertos límites
+
+RENDER (render.com):
+- Web Service desde GitHub
+- Build: pip install -r requirements.txt
+- Start: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
+
+HEROKU (heroku.com):
+- Instala Heroku CLI
+- heroku create ggal-options-analyzer
+- git push heroku main
+
+📊 CARACTERÍSTICAS DE TU APP:
+===========================
+✅ Dashboard en tiempo real de GGAL
+✅ Análisis de estrategias de opciones
+✅ Gestión de riesgo con Monte Carlo
+✅ Visualizaciones interactivas
+✅ Análisis técnico avanzado
+✅ Cadena de opciones completa
+
+🎉 ¡LISTO PARA COMPARTIR CON EL MUNDO!
