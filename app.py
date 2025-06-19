@@ -12,10 +12,11 @@ from options_calculator import OptionsCalculator
 from strategies import OptionsStrategies
 from visualizations import OptionsVisualizer
 from risk_analyzer import RiskAnalyzer
+from config import MERVAL_TICKERS
 
 # Configuración de la página
 st.set_page_config(
-    page_title="GGAL Options Analyzer - Tiempo Real",
+    page_title="Análisis de Opciones Merval - Tiempo Real",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -54,9 +55,9 @@ st.markdown("""
 
 # Inicializar objetos
 @st.cache_resource
-def initialize_analyzers():
+def initialize_analyzers(ticker):
     return {
-        'data_fetcher': DataFetcher('GGAL'),
+        'data_fetcher': DataFetcher(ticker),
         'calculator': OptionsCalculator(),
         'strategies': OptionsStrategies(),
         'visualizer': OptionsVisualizer(),
@@ -65,16 +66,45 @@ def initialize_analyzers():
 
 # Función para cargar datos
 @st.cache_data(ttl=60)  # Cache por 1 minuto
-def load_market_data():
-    analyzers = initialize_analyzers()
+def load_market_data(ticker):
+    analyzers = initialize_analyzers(ticker)
     return analyzers['data_fetcher'].get_market_data()
+
+# Limpiar cache cuando cambie el ticker
+def clear_cache_on_ticker_change():
+    if 'previous_ticker' not in st.session_state:
+        st.session_state.previous_ticker = None
+    
+    current_ticker = st.session_state.get('selected_ticker', 'GGAL')
+    if st.session_state.previous_ticker != current_ticker:
+        st.cache_data.clear()
+        st.cache_resource.clear()
+        st.session_state.previous_ticker = current_ticker
 
 # Función principal
 def main():
     # Header
-    st.markdown('<h1 class="main-header">📈 Evaluador de Opciones GGAL - Tiempo Real</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">📈 Análisis de Opciones S&P Merval - Tiempo Real</h1>', unsafe_allow_html=True)
     
-    # Sidebar
+    # Selector de ticker en el sidebar
+    st.sidebar.markdown('<div class="sidebar-header">🎯 Selección de Ticker</div>', unsafe_allow_html=True)
+      # Selector de ticker
+    selected_ticker = st.sidebar.selectbox(
+        "Selecciona el ticker a analizar:",
+        options=list(MERVAL_TICKERS.keys()),
+        index=0,  # GGAL por defecto
+        format_func=lambda x: f"{x} - {MERVAL_TICKERS[x]}",
+        help="Selecciona el ticker del S&P Merval que deseas analizar",
+        key="selected_ticker"
+    )
+    
+    # Limpiar cache si cambió el ticker
+    clear_cache_on_ticker_change()
+    
+    # Mostrar información del ticker seleccionado
+    st.sidebar.info(f"**Analizando:** {selected_ticker}\n**Empresa:** {MERVAL_TICKERS[selected_ticker]}")
+    
+    # Sidebar configuración
     st.sidebar.markdown('<div class="sidebar-header">⚙️ Configuración</div>', unsafe_allow_html=True)
     
     # Auto-refresh
@@ -85,31 +115,28 @@ def main():
     
     # Configuración manual
     st.sidebar.subheader("Parámetros de Análisis")
-    
-    # Parámetros del mercado
+      # Parámetros del mercado
     risk_free_rate = st.sidebar.slider("Tasa Libre de Riesgo (%)", 0.0, 10.0, 5.0, 0.1) / 100
     volatility_override = st.sidebar.slider("Volatilidad Implícita (%)", 10.0, 100.0, 30.0, 1.0) / 100
     use_historical_vol = st.sidebar.checkbox("Usar Volatilidad Histórica", value=True)
-    
-    # Parámetros de simulación
+      # Parámetros de simulación
     num_simulations = st.sidebar.slider("Simulaciones Monte Carlo", 1000, 10000, 5000, 1000)
     
     try:
         # Cargar datos del mercado
-        with st.spinner("Cargando datos del mercado..."):
-            market_data = load_market_data()
-            analyzers = initialize_analyzers()
+        with st.spinner(f"Cargando datos de {selected_ticker}..."):
+            market_data = load_market_data(selected_ticker)
+            analyzers = initialize_analyzers(selected_ticker)
         
         if market_data['current_price'] is None:
-            st.error("❌ No se pudieron obtener datos de GGAL. Verifica la conexión o el ticker.")
+            st.error(f"❌ No se pudieron obtener datos de {selected_ticker}. Verifica la conexión o el ticker.")
             return
-        
-        # Información básica
+          # Información básica
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
             st.metric(
-                "Precio Actual GGAL",
+                f"Precio Actual {selected_ticker}",
                 f"${market_data['current_price']:.2f}",
                 f"{((market_data['current_price'] / market_data['historical_data']['Close'].iloc[-2] - 1) * 100):.2f}%" if len(market_data['historical_data']) > 1 else "N/A"
             )
@@ -160,7 +187,7 @@ def main():
                     st.plotly_chart(price_fig, use_container_width=True)
             
             with col2:
-                st.subheader("Información de GGAL")
+                st.subheader(f"Información de {selected_ticker}")
                 st.write(f"**Sector:** {company_info['sector']}")
                 st.write(f"**Beta:** {company_info['beta']:.2f}")
                 if company_info['pe_ratio']:
@@ -487,13 +514,13 @@ def main():
                                 oi_fig = analyzers['visualizer'].plot_open_interest(all_options)
                                 st.plotly_chart(oi_fig, use_container_width=True)
             else:
-                st.warning("⚠️ No se encontraron datos de opciones para GGAL. Puede que no haya opciones disponibles o problemas de conectividad.")
+                st.warning(f"⚠️ No se encontraron datos de opciones para {selected_ticker}. Puede que no haya opciones disponibles o problemas de conectividad.")
         
         # Footer
         st.markdown("---")
         st.markdown("""
         <div style='text-align: center; color: #666; font-size: 0.8rem;'>
-            📊 Evaluador de Opciones GGAL - Desarrollado para análisis educativo<br>
+            📊 Análisis de Opciones S&P Merval - Desarrollado para análisis educativo<br>
             ⚠️ Este análisis no constituye asesoramiento financiero
         </div>
         """, unsafe_allow_html=True)

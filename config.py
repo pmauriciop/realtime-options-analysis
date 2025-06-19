@@ -1,9 +1,34 @@
 # Configuración de la aplicación
 import os
 
+# Tickers del S&P Merval (principales acciones argentinas)
+# Nota: Algunos tickers necesitan sufijos para Yahoo Finance
+MERVAL_TICKERS = {
+    "GGAL": "Grupo Galicia",
+    "BMA": "Banco Macro", 
+    "SUPV": "Grupo Supervielle",
+    "YPF": "YPF (ADR)",
+    "PAM": "Pampa Energía (ADR)",
+    "TX": "Ternium (ADR)",
+    "IRS": "IRSA (ADR)",
+    "CRESY": "Cresud (ADR)",
+    "TEO": "Telecom Argentina (ADR)",
+    "EDN.BA": "Edenor (Buenos Aires)",
+    "TGNO4.BA": "Transportadora Gas del Norte",
+    "TGSU2.BA": "Transportadora Gas del Sur",
+    "ALUA.BA": "Aluar (Buenos Aires)",
+    "BYMA.BA": "BYMA (Buenos Aires)",
+    "COME.BA": "Banco Comafi",
+    "CVH.BA": "Cablevision (Buenos Aires)",
+    "LOMA.BA": "Loma Negra",
+    "MIRG.BA": "Mirgor",
+    "METR.BA": "Metrogas",
+    "TRAN.BA": "Transener"
+}
+
 # Configuraciones de la aplicación
 APP_CONFIG = {
-    'TICKER': 'GGAL',
+    'TICKER': 'GGAL',  # Ticker por defecto
     'DEFAULT_RISK_FREE_RATE': 0.05,  # 5%
     'DEFAULT_VOLATILITY': 0.30,      # 30%
     'UPDATE_INTERVAL': 30,            # segundos
